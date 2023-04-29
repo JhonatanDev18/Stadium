@@ -3,7 +3,31 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stadium.Shared", "Stadium.Shared\Stadium.Shared.csproj", "{414E945D-F27D-4981-BF57-DFDD4C4A597C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stadium.API", "Stadium.API\Stadium.API.csproj", "{C744E1CE-DC65-4056-8B45-A283A08DF450}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stadium.WEB", "Stadium.WEB\Stadium.WEB.csproj", "{2EE435C4-C4FB-4BFF-90CC-F7A05268443F}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{414E945D-F27D-4981-BF57-DFDD4C4A597C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{414E945D-F27D-4981-BF57-DFDD4C4A597C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{414E945D-F27D-4981-BF57-DFDD4C4A597C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{414E945D-F27D-4981-BF57-DFDD4C4A597C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C744E1CE-DC65-4056-8B45-A283A08DF450}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C744E1CE-DC65-4056-8B45-A283A08DF450}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C744E1CE-DC65-4056-8B45-A283A08DF450}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C744E1CE-DC65-4056-8B45-A283A08DF450}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EE435C4-C4FB-4BFF-90CC-F7A05268443F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EE435C4-C4FB-4BFF-90CC-F7A05268443F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EE435C4-C4FB-4BFF-90CC-F7A05268443F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EE435C4-C4FB-4BFF-90CC-F7A05268443F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
