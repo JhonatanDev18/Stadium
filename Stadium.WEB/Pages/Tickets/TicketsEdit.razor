@@ -1,0 +1,56 @@
+﻿@page "/ticket/edit/{TicketId:int}"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+
+@if (ticket is null)
+{
+    <div class="spinner">
+        <MudProgressCircular Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true" />
+    </div>
+}
+else
+{
+    <TicketForm @ref="TicketForm" Ticket="ticket" OnValidSubmit="EditAsync" ReturnAction="Return"></TicketForm>
+}
+
+@code {
+    private Ticket? ticket;
+    private TicketForm? TicketForm;
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    [Parameter]
+    public int TicketId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responseHttp = await repository.Get<Ticket>($"/api/tickets/{TicketId}");
+
+        if (responseHttp.Error)
+        {
+            if (responseHttp.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                await sweetAlertService.FireAsync("Error", "Boleta no válida", SweetAlertIcon.Error);
+                return;
+            }
+
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        ticket = responseHttp.Response;
+    }
+
+    private void EditAsync()
+    {
+
+    }
+
+    private void Return()
+    {
+        
+    }
+}

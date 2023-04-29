@@ -15,7 +15,7 @@ namespace Stadium.API.Data
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
-            //await CheckTicketsAsync();
+            await CheckTicketsAsync();
         }
 
         private async Task CheckTicketsAsync()
@@ -24,7 +24,10 @@ namespace Stadium.API.Data
             {
                 DateTime date = DateTime.Now;
 
-                _context.Tickets.Add(new Ticket { DateUse = date, Used = false, ReceptionType = ReceptionType.North });
+                for (int i=0; i<50000;i++) 
+                {
+                    _context.Tickets.Add(new Ticket { DateUse = date, Used = false, ReceptionType = ReceptionType.Norte });
+                }
 
                 await _context.SaveChangesAsync();
             }

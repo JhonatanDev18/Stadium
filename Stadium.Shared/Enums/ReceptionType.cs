@@ -8,9 +8,9 @@ namespace Stadium.Shared.Enums
 {
     public enum ReceptionType
     {
-        North,
-        South,
-        East,
-        West
+        Norte,
+        Sur,
+        Oriental,
+        Occidental
     }
 }

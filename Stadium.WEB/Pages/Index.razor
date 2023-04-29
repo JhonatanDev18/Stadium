@@ -1,9 +1,111 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+@inject ISnackbar snackbar
 
-<h1>Hello, world!</h1>
+<style type="text/css">
+    .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border: 1px solid lightgray;
+        box-shadow: 2px 2px 8px 4px #d3d3d3d1;
+        border-radius: 15px;
+        font-family: sans-serif;
+        margin: 5px;
+    }
+</style>
 
-Welcome to your new app.
+<div class="row d-flex align-center justify-center">
+    <div class="card col-md-6">
+        <div class="card mb-3">
+            <img src="img/stadium.jpg" height="360" />
+        </div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+        <div class="mb-3">
+            <MudTextField Mask="@(new PatternMask("000000"))" Label="Boleta" @bind-Value="TicketValue" Variant="@Variant.Filled" Clearable />
+        </div>
+
+        <div class="mb-3">
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="@(() => ConsultTicket())"
+                       EndIcon="@Icons.Material.Filled.Send"
+                       FullWidth="true"
+                       Disabled="@logging">
+                @if (logging)
+                {
+                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                    <MudText Class="ms-2">Consultando...</MudText>
+                }
+                else
+                {
+                    <MudText>Consultar Boleta</MudText>
+                }
+            </MudButton>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Ticket? ticket;
+    public string? TicketValue;
+    private bool logging = false;
+
+    [CascadingParameter]
+    IModalService Modal { get; set; } = default!;
+
+    private async Task ConsultTicket()
+    {
+        logging = true;
+        if (String.IsNullOrEmpty(TicketValue))
+        {
+            await sweetAlertService.FireAsync("", "Debes ingresar la boleta", SweetAlertIcon.Warning);
+            logging = false;
+            return;
+        }
+
+        var responseHttp = await repository.Get<Ticket>($"/api/tickets/{TicketValue}");
+
+        if (responseHttp.Error)
+        {
+            if (responseHttp.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                await sweetAlertService.FireAsync("Error", "Boleta no válida", SweetAlertIcon.Error);
+                logging = false;
+                return;
+            }
+
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            logging = false;
+            return;
+        }
+
+        ticket = responseHttp.Response;
+
+        if (ticket!.Used)
+        {
+            DateTime timeUsed = ticket.DateUse;
+            await sweetAlertService.FireAsync("Información", $"La boleta fue usada a las {timeUsed.Hour}:{timeUsed.Minute}, por la porteria {ticket.ReceptionType}", SweetAlertIcon.Info);
+            logging = false;
+            return;
+        }
+        else
+        {
+            IModalReference modalReference;
+
+            modalReference = Modal.Show<Tickets.TicketsEdit>(string.Empty, new ModalParameters().Add("TicketId", ticket.Id));
+
+            var result = await modalReference.Result;
+
+            if (result.Confirmed)
+            {
+                navigationManager.NavigateTo("/");
+            }
+        }
+    }
+}

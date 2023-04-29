@@ -1,0 +1,103 @@
+﻿@inject SweetAlertService sweetAletService
+
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+
+<EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudCard>
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h6" Class="text-center">Editar Boleta</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+
+                <MudCardActions>
+                    <MudItem xs="12" Class="gap-4 d-flex align-center justify-center">
+                        <MudButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.AppRegistration"
+                                   IconSize="Size.Large"
+                                   Size="Size.Small"><MudText>Almacenar</MudText></MudButton>
+
+                        <MudButton Variant="Variant.Filled"
+                                   Size="Size.Small"
+                                   @onclick="ReturnAction"
+                                   Color="Color.Tertiary">
+                            <MudIcon Icon="@Icons.Material.Filled.ArrowBack" />
+                        </MudButton>
+                    </MudItem>
+                </MudCardActions>
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <div class="row">
+                <div class="col-md-4">
+                    <MudText>
+                        <div class="mb-4">
+
+                        </div>
+                        <div class="mb-4">
+
+                        </div>
+                        <div class="mb-4">
+
+                        </div>
+                    </MudText>
+                </div>
+            </div>
+        </MudCardContent>
+    </MudCard>
+
+</EditForm>
+
+@code {
+    private EditContext editContext = null!;
+
+    [Parameter]
+    [EditorRequired]
+    public Ticket Ticket { get; set; } = null!;
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback OnValidSubmit { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback ReturnAction { get; set; }
+
+    public bool FormPostedSuccessfully { get; set; }
+
+    protected override void OnInitialized()
+    {
+        editContext = new(Ticket);
+    }
+
+    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
+    {
+        var formWasMofied = editContext.IsModified();
+        if (!formWasMofied || FormPostedSuccessfully)
+        {
+            return;
+        }
+
+        var result = await sweetAletService.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Deseas abandonar la página y perder los cambios?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true,
+                CancelButtonText = "No",
+                ConfirmButtonText = "Sí"
+            });
+
+        var confirm = !String.IsNullOrEmpty(result.Value);
+
+        if (confirm)
+        {
+            return;
+        }
+
+        context.PreventNavigation();
+    }
+}

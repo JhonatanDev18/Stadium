@@ -26,13 +26,13 @@ namespace Stadium.API.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult> GetAsync(int id)
         {
-            var country = await _context.Tickets.FirstOrDefaultAsync(x => x.Id == id);
+            var ticket = await _context.Tickets.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (country == null)
+            if (ticket == null)
             {
                 return NotFound();
             }
-            return Ok(country);
+            return Ok(ticket);
         }
 
         [HttpPost]
